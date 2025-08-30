@@ -1,6 +1,6 @@
 class LoginPage {
   visit() {
-    cy.visit('/auth/login');
+    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
   }
 
   fillUsername(username) {
@@ -12,25 +12,14 @@ class LoginPage {
   }
 
   clickLogin() {
+    cy.intercept('POST', '**/auth/validate').as('loginRequest');
     cy.get('button[type="submit"]').click();
+    cy.wait('@loginRequest');
   }
 
-  clickForgotPassword() {
-    cy.contains('Forgot your password?').click();
-  }
-
-  submitForgotPassword(username) {
-    cy.get('input[name="username"]').type(username);
-    cy.get('button[type="submit"]').click();
-  }
-
-  getAlertMessage() {
+  getErrorMessage() {
     return cy.get('.oxd-alert-content');
   }
-  
-  getRequiredMessage() {
-  return cy.get('.oxd-input-field-error-message');
-}
 }
 
-export default LoginPage;
+export default new LoginPage();
